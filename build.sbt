@@ -233,3 +233,5 @@ lazy val packageJavaApp = ReleaseStep(
     extracted.runAggregated(packageBin in Universal in ref, st)
   }
 )
+enablePlugins(PackPlugin)
+packMain := Map("kafka-lag-exporter" -> "com.lightbend.kafkalagexporter.MainApp")
