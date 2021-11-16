@@ -150,6 +150,7 @@ Resources:
       Visibility: !Ref BuildVisibility
       ServiceRole: !GetAtt 'CodeBuildRole.Arn'
       Description: !Sub Build and publish for repo ${RepositoryName}
+      Name: !Ref AWS::StackName
       LogsConfig:
         CloudWatchLogs:
           GroupName: !Ref BuildLogsGroup
