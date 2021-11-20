@@ -40,11 +40,11 @@ object Dependencies {
   val AkkaHttp = "com.typesafe.akka" %% "akka-http" % "10.2.9"
 
   /* Test */
-  val AkkaTypedTestKit = "com.typesafe.akka" %% "akka-actor-testkit-typed" % Version.Akka % Test
-  val ScalaTest = "org.scalatest" %% "scalatest" % "3.2.10" % Test
-  val AkkaStreamsTestKit = "com.typesafe.akka" %% "akka-stream-testkit" % Version.Akka % Test
-  val AlpakkaKafkaTestKit = "com.typesafe.akka" %% "akka-stream-kafka-testkit" % "2.1.1" % Test excludeAll (jacksonExclusionRule, log4jExclusionRule, slf4jExclusionRule)
-  val MockitoScala = "org.mockito" %% "mockito-scala" % "1.17.5" % Test
-  val TestcontainersKafka = "org.testcontainers" % "kafka" % Version.Testcontainers % Test
-  val TestcontainersInfluxDb = "org.testcontainers" % "influxdb" % Version.Testcontainers % Test
+  val AkkaTypedTestKit       = "com.typesafe.akka"       %% "akka-actor-testkit-typed"  % Version.Akka           % Test
+  val ScalaTest              = "org.scalatest"           %% "scalatest"                 % "3.1.4"                % Test
+  val AkkaStreamsTestKit     = "com.typesafe.akka"       %% "akka-stream-testkit"       % Version.Akka           % Test
+  val MockitoScala           = "org.mockito"             %% "mockito-scala"             % "1.0.8"                % Test
+  val AlpakkaKafkaTestKit    = "com.typesafe.akka"       %% "akka-stream-kafka-testkit" % "2.0.7"     % Test excludeAll(jacksonExclusionRule, log4jExclusionRule, slf4jExclusionRule)
+  val TestcontainersKafka    = "org.testcontainers"      %  "kafka"                     % Version.Testcontainers % Test
+  val TestcontainersInfluxDb = "org.testcontainers"      %  "influxdb"                  % Version.Testcontainers % Test
 }
