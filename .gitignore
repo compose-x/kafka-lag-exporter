@@ -22,7 +22,7 @@ outputs/*
 
 # Distribution / packaging
 .Python
-env/
+env/m
 build/
 develop-eggs/
 dist/

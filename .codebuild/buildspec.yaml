@@ -10,13 +10,17 @@ phases:
     runtime-versions:
       java: corretto11
     commands:
-      - if [ -z ${AWS_ACCOUNT_ID+x} ]; then AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq -r .Account); fi
-      - REGISTRY_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION:-$AWS_DEFAULT_REGION}.amazonaws.com/
       - (pip --version && pip install pip -U) || curl https://bootstrap.pypa.io/get-pip.py | python
+      - sbt --version
+      - mvn --version
+      - (tar --version 2>/dev/null || yum install tar gzip -y)
+      - mvn --version
 
   pre_build:
     commands:
       - echo Login to own ECR registry
+      - if [ -z ${AWS_ACCOUNT_ID+x} ]; then AWS_ACCOUNT_ID=$(aws sts get-caller-identity | jq -r .Account); fi
+      - REGISTRY_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION:-$AWS_DEFAULT_REGION}.amazonaws.com/
       - COMMIT_HASH=${CODEBUILD_RESOLVED_SOURCE_VERSION::7}
       - EPOCH=`date +'%s'`
       - IMAGE_TAG=${COMMIT_HASH:=$EPOCH}
@@ -26,5 +30,12 @@ phases:
 
   build:
     commands:
-      - docker build -f docker/Dockerfile -t ${PUBLIC_REGISTRY}/kafka-lag-exporter:al2-${IMAGE_TAG} .
-      - docker push ${PUBLIC_REGISTRY}/kafka-lag-exporter:al2-${IMAGE_TAG}
+      - sbt clean compile pack -DskipTests=true
+      - find target -name "*.jar" -print
+      - find target -name "*kafka-lag-exporter*.jar" -type f -print
+
+      - docker build --build-arg APP_BUILD=target/pack -f docker/Dockerfile.alpine -t ${PUBLIC_REGISTRY}/kafka-lag-exporter:${IMAGE_TAG}-alpine .
+      - docker push ${PUBLIC_REGISTRY}/kafka-lag-exporter:${IMAGE_TAG}-alpine
+      - docker build --build-arg APP_BUILD=target/pack -f docker/Dockerfile -t ${PUBLIC_REGISTRY}/kafka-lag-exporter:${IMAGE_TAG} .
+      - docker push ${PUBLIC_REGISTRY}/kafka-lag-exporter:${IMAGE_TAG}
+      - rm -rf /root/.docker

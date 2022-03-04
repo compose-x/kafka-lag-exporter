@@ -1,0 +1,17 @@
+ARG IMAGE_TAG=11-alpine
+ARG BASE_IMAGE=public.ecr.aws/ews-network/amazoncorretto
+
+FROM ${BASE_IMAGE}:${IMAGE_TAG}
+ARG APP_BUILD
+
+RUN addgroup -S app -g 1042 && \
+    adduser -S app -u 1042 -G app -h /app && \
+    chown -R app: /app
+
+COPY $APP_BUILD /app/
+COPY examples/standalone/logback.xml /app/logback.xml
+WORKDIR /app
+ENV PATH=/app/bin:$PATH
+USER app
+ENTRYPOINT ["kafka-lag-exporter"]
+CMD ["-Dlogback.configurationFile=/app/logback.xml"]
